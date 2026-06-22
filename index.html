@@ -224,12 +224,12 @@ a{color:inherit;text-decoration:none}
     </svg>
     <div class="gate-eyebrow">CipherHealth</div>
     <h1>Marketing <em>Hub</em></h1>
-    <p class="sub">The home for our AI-built tools. Sign in with your CipherHealth email to get in.</p>
+    <p class="sub">The home for our AI-built tools. Sign in to continue.</p>
     <label class="field-label" for="email">Work email</label>
-    <input class="gate-input" type="email" id="email" placeholder="you@cipherhealth.com" autocomplete="email" />
+    <input class="gate-input" type="email" id="email" placeholder="Enter your work email" autocomplete="email" />
     <button class="gate-btn" id="gateBtn">Enter the Hub</button>
     <div class="gate-err" id="gateErr"></div>
-    <div class="gate-foot">Access is limited to @cipherhealth.com addresses. This gate organizes internal tools — don't store sensitive or patient data in any tool here.</div>
+    <div class="gate-foot">For authorized CipherHealth team members. This gate organizes internal tools — don't store sensitive or patient data in any tool here.</div>
   </div>
 </div>
 
@@ -446,7 +446,7 @@ function attemptLogin(){
   const err = document.getElementById('gateErr');
   const ok = /^[^\s@]+@cipherhealth\.com$/.test(raw);
   if(!ok){
-    err.textContent = "Please enter a valid @cipherhealth.com email address.";
+    err.textContent = "Please enter a valid CipherHealth work email address.";
     return;
   }
   err.textContent = "";
