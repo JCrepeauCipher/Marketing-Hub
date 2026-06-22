@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Hub · CipherHealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --anchor:#2D2660;
+  --violet:#5B4FB5;
+  --teal:#00B4A4;
+  --chartreuse:#B5CC2E;
+  --amber:#E8A020;
+  --lavender:#F2F1F9;
+  --teal-tint:#D0F4F1;
+  --chartreuse-tint:#E8F4A8;
+  --amber-tint:#FDEFD0;
+  --ink:#1c1830;
+  --muted:#6c6783;
+  --line:#e4e1f0;
+  --white:#ffffff;
+  --sidebar-w:260px;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(45,38,96,.06), 0 8px 24px rgba(45,38,96,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--lavender);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit;text-decoration:none}
+
+/* ---------- LOGIN GATE ---------- */
+#gate{
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(900px 600px at 85% -10%, rgba(91,79,181,.55), transparent 60%),
+    radial-gradient(700px 500px at 10% 110%, rgba(0,180,164,.45), transparent 55%),
+    var(--anchor);
+  padding:24px;
+}
+.gate-card{
+  width:100%;max-width:420px;background:var(--white);
+  border-radius:20px;padding:40px 36px;box-shadow:0 30px 80px rgba(20,15,50,.4);
+  position:relative;overflow:hidden;
+}
+.gate-spark{position:absolute;top:-30px;right:-30px;width:130px;height:130px;opacity:.5}
+.gate-eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.gate-card h1{font-family:'Merriweather',serif;font-size:27px;line-height:1.2;margin:10px 0 6px;color:var(--anchor)}
+.gate-card h1 em{color:var(--violet)}
+.gate-card p.sub{color:var(--muted);font-size:14px;margin-bottom:26px}
+.field-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.gate-input{
+  width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:11px;
+  font-size:15px;color:var(--ink);background:#fbfaff;transition:border-color .15s, box-shadow .15s;
+}
+.gate-input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+.gate-btn{
+  width:100%;margin-top:16px;padding:13px;border-radius:11px;
+  background:var(--anchor);color:var(--chartreuse);font-weight:600;font-size:15px;
+  transition:transform .12s, background .15s;
+}
+.gate-btn:hover{background:#241e52;transform:translateY(-1px)}
+.gate-btn:active{transform:translateY(0)}
+.gate-err{color:#c0392b;font-size:13px;margin-top:11px;min-height:18px;font-weight:500}
+.gate-foot{margin-top:24px;font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+
+/* ---------- APP SHELL ---------- */
+#app{display:none;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* sidebar */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;background:var(--anchor);color:#cfcae8;
+  display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:40;
+  transition:transform .25s ease;
+}
+.brand{padding:24px 22px 18px;display:flex;align-items:center;gap:11px}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:var(--teal);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-mark svg{width:20px;height:20px}
+.brand-text strong{display:block;color:#fff;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.brand-text span{font-size:11px;color:#9b95c4;letter-spacing:.05em;text-transform:uppercase}
+
+.nav{flex:1;overflow-y:auto;padding:8px 12px 20px}
+.nav-group{margin-top:18px}
+.nav-group-label{font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
+  color:#8b85b8;padding:0 12px 8px}
+.nav-item{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:10px 12px;border-radius:10px;color:#cfcae8;font-size:14px;font-weight:500;
+  transition:background .13s,color .13s;margin-bottom:2px;
+}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.85}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:var(--teal);color:#fff}
+.nav-item.active svg{opacity:1}
+.nav-count{margin-left:auto;font-size:11px;font-weight:600;background:rgba(255,255,255,.12);
+  color:#cfcae8;padding:1px 8px;border-radius:20px}
+.nav-item.active .nav-count{background:rgba(255,255,255,.25);color:#fff}
+.nav-item.admin{color:var(--chartreuse)}
+.nav-item.admin svg{opacity:1}
+
+.side-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.09)}
+.user-chip{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--violet);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.user-chip .meta{overflow:hidden}
+.user-chip .meta b{display:block;font-size:13px;color:#fff;font-weight:600;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.user-chip .meta small{font-size:11px;color:#9b95c4}
+.signout{margin-top:10px;font-size:12px;color:#9b95c4;display:flex;align-items:center;gap:6px}
+.signout:hover{color:#fff}
+.signout svg{width:14px;height:14px}
+
+/* main */
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-width:0}
+.topbar{
+  position:sticky;top:0;z-index:30;background:rgba(242,241,249,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:16px 36px;display:flex;align-items:center;gap:18px;
+}
+.hamburger{display:none;width:38px;height:38px;border-radius:10px;background:var(--white);
+  border:1px solid var(--line);align-items:center;justify-content:center}
+.hamburger svg{width:20px;height:20px;color:var(--anchor)}
+.search{flex:1;max-width:440px;position:relative}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted)}
+.search input{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--line);border-radius:11px;
+  background:var(--white);font-size:14px;color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+.topbar-spacer{flex:1}
+.pill-admin{font-size:12px;font-weight:600;color:var(--anchor);background:var(--chartreuse-tint);
+  padding:6px 13px;border-radius:20px;display:flex;align-items:center;gap:6px}
+.pill-admin svg{width:14px;height:14px}
+
+.content{padding:30px 36px 60px;flex:1}
+.page-head{margin-bottom:26px}
+.page-eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.page-head h2{font-family:'Merriweather',serif;font-size:30px;color:var(--anchor);letter-spacing:-.01em;line-height:1.15}
+.page-head h2 em{color:var(--violet)}
+.page-head p{color:var(--muted);font-size:15px;margin-top:9px;max-width:640px}
+
+/* filter chips */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.chip{font-size:13px;font-weight:500;color:var(--muted);background:var(--white);
+  border:1px solid var(--line);padding:7px 15px;border-radius:30px;transition:all .13s}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip.active{background:var(--anchor);border-color:var(--anchor);color:#fff}
+
+/* tool grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.card{
+  background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s,border-color .15s;
+  position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:transparent}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon svg{width:23px;height:23px}
+.ic-teal{background:var(--teal-tint);color:#008275}
+.ic-violet{background:#e6e2f7;color:var(--violet)}
+.ic-amber{background:var(--amber-tint);color:#b8770e}
+.ic-chart{background:var(--chartreuse-tint);color:#71810d}
+.badge-admin{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--anchor);background:var(--chartreuse);padding:3px 9px;border-radius:20px}
+.card h3{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13.5px;color:var(--muted);line-height:1.55;flex:1}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin:15px 0 16px}
+.tag{font-size:11px;font-weight:500;color:var(--violet);background:var(--lavender);padding:3px 9px;border-radius:6px}
+.card-cta{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--teal);margin-top:auto}
+.card-cta svg{width:15px;height:15px;transition:transform .15s}
+.card:hover .card-cta svg{transform:translateX(3px)}
+
+.empty{text-align:center;padding:70px 20px;color:var(--muted)}
+.empty svg{width:46px;height:46px;color:var(--line);margin-bottom:14px}
+.empty h3{font-size:17px;color:var(--ink);margin-bottom:6px;font-weight:600}
+
+/* section blocks for grouped view */
+.section-block{margin-bottom:36px}
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-title h3{font-size:18px;font-weight:600;color:var(--anchor)}
+.section-title .dot{width:9px;height:9px;border-radius:50%}
+.section-title .ct{font-size:12px;color:var(--muted);font-weight:500;background:var(--white);
+  border:1px solid var(--line);padding:2px 10px;border-radius:20px}
+
+/* admin panel extras */
+.admin-banner{background:linear-gradient(100deg,var(--anchor),var(--violet));color:#fff;
+  border-radius:var(--radius);padding:24px 26px;margin-bottom:28px;display:flex;align-items:center;gap:18px}
+.admin-banner .ico{width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.admin-banner .ico svg{width:26px;height:26px;color:var(--chartreuse)}
+.admin-banner h3{font-size:18px;margin-bottom:4px}
+.admin-banner p{font-size:13.5px;color:#d3cef0}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(20,15,50,.4);z-index:35}
+
+@media(max-width:920px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .content{padding:24px 20px 50px}
+  .topbar{padding:14px 20px}
+  .overlay.show{display:block}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN GATE ===== -->
+<div id="gate">
+  <div class="gate-card">
+    <svg class="gate-spark" viewBox="0 0 100 100" fill="none">
+      <path d="M50 0 L58 42 L100 50 L58 58 L50 100 L42 58 L0 50 L42 42 Z" fill="#B5CC2E" opacity="0.6"/>
+    </svg>
+    <div class="gate-eyebrow">CipherHealth</div>
+    <h1>Marketing <em>Hub</em></h1>
+    <p class="sub">The home for our AI-built tools. Sign in with your CipherHealth email to get in.</p>
+    <label class="field-label" for="email">Work email</label>
+    <input class="gate-input" type="email" id="email" placeholder="you@cipherhealth.com" autocomplete="email" />
+    <button class="gate-btn" id="gateBtn">Enter the Hub</button>
+    <div class="gate-err" id="gateErr"></div>
+    <div class="gate-foot">Access is limited to @cipherhealth.com addresses. This gate organizes internal tools — don't store sensitive or patient data in any tool here.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+<div class="overlay" id="overlay"></div>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v6c0 5 3.5 8 9 9 5.5-1 9-4 9-9V7l-9-5z" fill="#fff"/><path d="M9 12l2 2 4-4" stroke="#00B4A4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <strong>Marketing Hub</strong>
+        <span>CipherHealth</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav"></nav>
+
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <div class="meta">
+          <b id="userName">—</b>
+          <small id="userRole">Member</small>
+        </div>
+      </div>
+      <button class="signout" id="signout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
+        <input type="text" id="search" placeholder="Search tools…" />
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="pill-admin" id="adminPill" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke-linejoin="round"/></svg>
+        Super User
+      </div>
+    </div>
+
+    <main class="content" id="content"></main>
+  </div>
+</div>
+</div>
+
+<script>
+/* =========================================================================
+   CONFIGURATION  —  edit these blocks as the Hub grows
+   ========================================================================= */
+
+// Super Users: add CipherHealth emails (lowercase) who should see the Admin area.
+const SUPER_USERS = [
+  "jason@cipherhealth.com",
+  "zack@cipherhealth.com"
+];
+
+// Tool Types (categories). icon = one of: teal, violet, amber, chart
+const TOOL_TYPES = [
+  { id:"generator",   label:"Generators" },
+  { id:"calculator",  label:"Calculators & ROI" },
+  { id:"template",    label:"Templates & Builders" },
+  { id:"reference",   label:"Reference & Lookups" }
+];
+
+// Solutions (product lines)
+const SOLUTIONS = [
+  { id:"outreach", label:"CipherOutreach",    color:"#00B4A4" },
+  { id:"rounds",   label:"CipherRounds",      color:"#5B4FB5" },
+  { id:"insights", label:"CipherInsights",    color:"#E8A020" },
+  { id:"tcm",      label:"TCM",               color:"#5B4FB5" },
+  { id:"team",     label:"TEAM",              color:"#E8A020" },
+  { id:"crossgtm", label:"Cross-GTM / Brand", color:"#B5CC2E" }
+];
+
+// THE TOOLS  —  add a new object here whenever you ship a tool.
+// type  -> matches a TOOL_TYPES id
+// solution -> matches a SOLUTIONS id
+// admin -> true means only Super Users see it
+// url -> your GitHub-hosted link (use "#" as placeholder)
+const TOOLS = [
+  {
+    name:"New Hire Welcome Card",
+    desc:"Generate an on-brand welcome card for a new CipherHealth hire.",
+    type:"generator", solution:"crossgtm", admin:false,
+    url:"https://jcrepeaucipher.github.io/Welcome-to-Cipher-/", tags:["Brand"]
+  },
+  {
+    name:"Email Signature Generator",
+    desc:"Build a branded CipherHealth email signature in seconds.",
+    type:"generator", solution:"crossgtm", admin:false,
+    url:"https://jcrepeaucipher.github.io/Email-Signature/", tags:["Brand"]
+  },
+  {
+    name:"Demo Builder",
+    desc:"Spin up a tailored product demo for a prospect.",
+    type:"generator", solution:"crossgtm", admin:false,
+    url:"https://jcrepeaucipher.github.io/Demo-Builder/", tags:["Sales"]
+  },
+  {
+    name:"Onboarding Summary Generator",
+    desc:"Generate a branded onboarding summary for a new CipherHealth hire.",
+    type:"generator", solution:"crossgtm", admin:false,
+    url:"https://jcrepeaucipher.github.io/New-Hire-Onboarding/", tags:["Onboarding"]
+  },
+  {
+    name:"Care Coordination Readiness Assessment",
+    desc:"Interactive assessment of a health system's care coordination maturity.",
+    type:"template", solution:"crossgtm", admin:false,
+    url:"https://jcrepeaucipher.github.io/Care-Coordination-Assessment-/", tags:["Discovery"]
+  },
+  {
+    name:"Readmission ROI Calculator",
+    desc:"Model avoidable-readmission savings from outreach for a prospect.",
+    type:"calculator", solution:"outreach", admin:false,
+    url:"https://jcrepeaucipher.github.io/Readmissions-Calculator/", tags:["ROI","Sales"]
+  },
+  {
+    name:"Outreach Staffing Model",
+    desc:"Size the outreach team needed to cover a program's call volume.",
+    type:"calculator", solution:"outreach", admin:false,
+    url:"https://jcrepeaucipher.github.io/Staffing-Calculator/", tags:["Planning"]
+  },
+  {
+    name:"SMS Capacity & 10-DLC Calculator",
+    desc:"Plan SMS throughput and 10-DLC capacity for outreach campaigns.",
+    type:"calculator", solution:"outreach", admin:false,
+    url:"https://jcrepeaucipher.github.io/SMS-Messaging-Services-Capacity/", tags:["Planning"]
+  },
+  {
+    name:"Outreach Reach Rates Dashboard",
+    desc:"Benchmark reach rates across outreach programs.",
+    type:"reference", solution:"insights", admin:false,
+    url:"https://jcrepeaucipher.github.io/Reach_rate/", tags:["Data"]
+  },
+  {
+    name:"Low-Rated Hospitals List",
+    desc:"Definitive Healthcare list of low-rated hospitals for targeting.",
+    type:"reference", solution:"insights", admin:false,
+    url:"https://jcrepeaucipher.github.io/Low-scoring-hospitals/", tags:["Data","Targeting"]
+  },
+  {
+    name:"TCM ROI Calculator",
+    desc:"Model Transitional Care Management revenue and ROI for a health system.",
+    type:"calculator", solution:"tcm", admin:false,
+    url:"https://jcrepeaucipher.github.io/TCM-Calculator-V2/", tags:["ROI","TCM"]
+  },
+  {
+    name:"TCM Discovery Guide",
+    desc:"Guided discovery for TCM conversations with prospects.",
+    type:"template", solution:"tcm", admin:false,
+    url:"https://jcrepeaucipher.github.io/TCM-Discoveryv1/", tags:["Discovery","TCM"]
+  },
+  {
+    name:"TCM Billing Workflow Visualizer",
+    desc:"Walk through TCM billing workflows visually.",
+    type:"template", solution:"tcm", admin:false,
+    url:"https://jcrepeaucipher.github.io/TCM-Workflow-/", tags:["TCM","Workflow"]
+  },
+  {
+    name:"TCM Challenger Deck",
+    desc:"Challenger-style narrative on regulatory pressure and clinical capacity.",
+    type:"template", solution:"tcm", admin:false,
+    url:"https://jcrepeaucipher.github.io/TCM-POV/", tags:["Deck","Sales"]
+  },
+  {
+    name:"TEAM Discovery Guide",
+    desc:"Discovery guide for the CMS TEAM model.",
+    type:"template", solution:"team", admin:false,
+    url:"https://jcrepeaucipher.github.io/TEAM-Discovery/", tags:["Discovery","TEAM"]
+  }
+];
+
+/* =========================================================================
+   STATE + ICONS
+   ========================================================================= */
+const state = { email:null, isAdmin:false, view:{kind:"all"}, search:"" };
+
+const ICONS = {
+  home:'<path d="M3 12l9-9 9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  layers:'<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"/>',
+  shield:'<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke-linejoin="round"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>',
+  generator:'<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke-linecap="round" stroke-linejoin="round"/>',
+  calculator:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2" stroke-linecap="round"/>',
+  template:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9" stroke-linejoin="round"/>',
+  reference:'<path d="M4 4h12a2 2 0 012 2v14a2 2 0 00-2-2H4zM20 6v14" stroke-linecap="round" stroke-linejoin="round"/>'
+};
+const typeIconClass = { generator:"ic-chart", calculator:"ic-teal", template:"ic-violet", reference:"ic-amber" };
+function svg(path, cls){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="'+(cls||'')+'">'+path+'</svg>'; }
+
+/* =========================================================================
+   AUTH GATE
+   ========================================================================= */
+const gate = document.getElementById('gate');
+const app  = document.getElementById('app');
+
+function attemptLogin(){
+  const raw = document.getElementById('email').value.trim().toLowerCase();
+  const err = document.getElementById('gateErr');
+  const ok = /^[^\s@]+@cipherhealth\.com$/.test(raw);
+  if(!ok){
+    err.textContent = "Please enter a valid @cipherhealth.com email address.";
+    return;
+  }
+  err.textContent = "";
+  state.email = raw;
+  state.isAdmin = SUPER_USERS.includes(raw);
+  gate.style.display = "none";
+  app.style.display = "block";
+  initShell();
+}
+document.getElementById('gateBtn').addEventListener('click', attemptLogin);
+document.getElementById('email').addEventListener('keydown', e=>{ if(e.key==='Enter') attemptLogin(); });
+
+document.getElementById('signout').addEventListener('click', ()=>{
+  state.email=null; state.isAdmin=false; state.view={kind:"all"}; state.search="";
+  app.style.display="none"; gate.style.display="flex";
+  document.getElementById('email').value="";
+});
+
+/* =========================================================================
+   SHELL INIT (after login)
+   ========================================================================= */
+function initShell(){
+  const name = state.email.split('@')[0].split(/[._-]/).map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(' ');
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userRole').textContent = state.isAdmin ? "Super User" : "Member";
+  document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
+  if(state.isAdmin) document.getElementById('adminPill').style.display = "flex";
+  buildNav();
+  render();
+}
+
+function visibleTools(){ return TOOLS.filter(t => !t.admin || state.isAdmin); }
+
+function buildNav(){
+  const nav = document.getElementById('nav');
+  let html = "";
+
+  // Primary
+  html += '<div class="nav-group">';
+  html += navItem("all", ICONS.grid, "All Tools", visibleTools().length);
+  html += '</div>';
+
+  // By type
+  html += '<div class="nav-group"><div class="nav-group-label">By Tool Type</div>';
+  TOOL_TYPES.forEach(tt=>{
+    const ct = visibleTools().filter(t=>t.type===tt.id).length;
+    html += navItem("type:"+tt.id, ICONS[tt.id]||ICONS.grid, tt.label, ct);
+  });
+  html += '</div>';
+
+  // By solution
+  html += '<div class="nav-group"><div class="nav-group-label">By Solution</div>';
+  SOLUTIONS.forEach(s=>{
+    const ct = visibleTools().filter(t=>t.solution===s.id).length;
+    html += navItem("sol:"+s.id, ICONS.layers, s.label, ct);
+  });
+  html += '</div>';
+
+  // Admin
+  if(state.isAdmin){
+    html += '<div class="nav-group"><div class="nav-group-label">Admin</div>';
+    html += '<button class="nav-item admin" data-view="admin">'+svg(ICONS.shield)+'<span>Super User Area</span></button>';
+    html += '</div>';
+  }
+  nav.innerHTML = html;
+
+  nav.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const v = btn.dataset.view;
+      if(v==="admin") state.view={kind:"admin"};
+      else if(v==="all") state.view={kind:"all"};
+      else if(v.startsWith("type:")) state.view={kind:"type", id:v.split(":")[1]};
+      else if(v.startsWith("sol:")) state.view={kind:"sol", id:v.split(":")[1]};
+      closeSidebar();
+      render();
+    });
+  });
+}
+function navItem(view, icon, label, count){
+  return '<button class="nav-item" data-view="'+view+'">'+svg(icon)+'<span>'+label+'</span>'+
+         (count!=null?'<span class="nav-count">'+count+'</span>':'')+'</button>';
+}
+
+/* =========================================================================
+   RENDER VIEWS
+   ========================================================================= */
+function render(){
+  // highlight active nav
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const map = {all:"all", admin:"admin", type:"type:"+state.view.id, sol:"sol:"+state.view.id};
+  const active = document.querySelector('.nav-item[data-view="'+map[state.view.kind]+'"]');
+  if(active) active.classList.add('active');
+
+  if(state.view.kind==="admin"){ renderAdmin(); return; }
+
+  let pool = visibleTools();
+  let eyebrow="Browse", title="All <em>Tools</em>", sub="Every tool the team has shipped, in one place. Pick a category on the left or search above.";
+
+  if(state.view.kind==="type"){
+    const tt = TOOL_TYPES.find(t=>t.id===state.view.id);
+    pool = pool.filter(t=>t.type===state.view.id);
+    eyebrow="Tool Type"; title=tt.label.replace(/(\w+)$/,'<em>$1</em>');
+    sub="Tools grouped by what they do.";
+  } else if(state.view.kind==="sol"){
+    const s = SOLUTIONS.find(x=>x.id===state.view.id);
+    pool = pool.filter(t=>t.solution===state.view.id);
+    eyebrow="Solution"; title=s.label.replace(/(\w+)$/,'<em>$1</em>');
+    sub="Tools that support this solution line.";
+  }
+
+  // search filter
+  if(state.search){
+    const q = state.search.toLowerCase();
+    pool = pool.filter(t => (t.name+t.desc+t.tags.join(' ')).toLowerCase().includes(q));
+  }
+
+  let html = pageHead(eyebrow, title, sub);
+
+  // On "All Tools" with no search, show grouped-by-solution sections for scannability
+  if(state.view.kind==="all" && !state.search){
+    SOLUTIONS.forEach(s=>{
+      const items = pool.filter(t=>t.solution===s.id);
+      if(!items.length) return;
+      html += '<div class="section-block"><div class="section-title">'+
+        '<span class="dot" style="background:'+s.color+'"></span>'+
+        '<h3>'+s.label+'</h3><span class="ct">'+items.length+' tool'+(items.length>1?'s':'')+'</span></div>'+
+        '<div class="grid">'+items.map(cardHTML).join('')+'</div></div>';
+    });
+  } else {
+    html += pool.length ? '<div class="grid">'+pool.map(cardHTML).join('')+'</div>' : emptyState();
+  }
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderAdmin(){
+  const adminTools = TOOLS.filter(t=>t.admin);
+  let html = pageHead("Restricted", "Super User <em>Area</em>",
+    "Tools and pipelines limited to Super Users. Manage who has access by editing the SUPER_USERS list in the code.");
+  html += '<div class="admin-banner"><div class="ico">'+svg(ICONS.shield)+'</div>'+
+    '<div><h3>You have Super User access</h3><p>'+adminTools.length+' restricted tool'+(adminTools.length!==1?'s':'')+' available. '+
+    'These are hidden from standard members.</p></div></div>';
+  html += adminTools.length ? '<div class="grid">'+adminTools.map(cardHTML).join('')+'</div>' : emptyState();
+  document.getElementById('content').innerHTML = html;
+}
+
+function pageHead(eyebrow,title,sub){
+  return '<div class="page-head"><div class="page-eyebrow">'+eyebrow+'</div>'+
+    '<h2>'+title+'</h2><p>'+sub+'</p></div>';
+}
+function cardHTML(t){
+  const sol = SOLUTIONS.find(s=>s.id===t.solution);
+  const tt  = TOOL_TYPES.find(x=>x.id===t.type);
+  return '<a class="card" href="'+t.url+'" '+(t.url!=="#"?'target="_blank" rel="noopener"':'')+'>'+
+    '<div class="card-top"><div class="card-icon '+(typeIconClass[t.type]||'ic-teal')+'">'+svg(ICONS[t.type]||ICONS.grid)+'</div>'+
+    (t.admin?'<span class="badge-admin">Super User</span>':'')+'</div>'+
+    '<h3>'+t.name+'</h3><p>'+t.desc+'</p>'+
+    '<div class="card-tags"><span class="tag">'+(tt?tt.label:'')+'</span><span class="tag">'+(sol?sol.label:'')+'</span></div>'+
+    '<span class="card-cta">Open tool '+svg(ICONS.arrow)+'</span></a>';
+}
+function emptyState(){
+  return '<div class="empty">'+svg(ICONS.grid)+'<h3>Nothing here yet</h3>'+
+    '<p>No tools match. Try a different category or clear the search.</p></div>';
+}
+
+/* search */
+document.getElementById('search').addEventListener('input', e=>{
+  state.search = e.target.value;
+  render();
+});
+
+/* mobile sidebar */
+const sidebar=document.getElementById('sidebar'), overlay=document.getElementById('overlay');
+function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+document.getElementById('hamburger').addEventListener('click', ()=>{
+  sidebar.classList.add('open'); overlay.classList.add('show');
+});
+overlay.addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>
